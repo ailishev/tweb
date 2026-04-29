@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ChatType {
+  private
+  group
+}
+
+model User {
+  id        String    @id @default(uuid())
+  phone     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  sessions  Session[]
+  profile   Profile?
+  members   ChatMember[]
+  messages  Message[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model PhoneOtp {
+  id        String   @id @default(cuid())
+  phone     String
+  codeHash  String
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId         String   @unique
+  firstName      String?
+  lastName       String?
+  username       String?  @unique
+  bio            String?
+  avatarUrl      String?
+  isPremium      Boolean  @default(false)
+  phoneNumber    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id        String       @id @default(cuid())
+  type      ChatType
+  title     String?
+  createdAt DateTime     @default(now())
+
+  members  ChatMember[]
+  messages Message[]
+}
+
+model ChatMember {
+  id     String @id @default(cuid())
+  chatId String
+  userId String
+  role   String
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([chatId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  senderId  String
+  text      String
+  createdAt DateTime @default(now())
+
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+}

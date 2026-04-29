@@ -1,0 +1,22 @@
+{
+  "name": "tweb-messenger-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0"
+  }
+}
