@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm build:frontend",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "functions": {
+    "backend/api/index.js": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 10
+    }
+  }
+}

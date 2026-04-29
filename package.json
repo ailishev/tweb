@@ -19,7 +19,10 @@
     "watch-lang": "node watch-lang.js",
     "lint": "npx eslint \"src/**/**.ts\"",
     "build:solid": "node ./src/scripts/build_solid.js",
-    "format-lang": "node ./src/scripts/format_lang.js"
+    "format-lang": "node ./src/scripts/format_lang.js",
+    "dev:frontend": "pnpm --filter tweb-frontend dev",
+    "build:frontend": "pnpm --filter tweb-frontend build",
+    "dev:backend": "pnpm --filter tweb-messenger-backend dev"
   },
   "author": "",
   "license": "GPL-3.0-only",
@@ -73,5 +76,10 @@
   "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a",
   "dependencies": {
     "fflate": "^0.8.2"
-  }
+  },
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
 }

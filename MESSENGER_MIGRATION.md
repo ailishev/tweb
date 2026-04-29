@@ -1,42 +1,38 @@
-# Messenger backend migration scaffold
+# Full-stack monorepo scaffold (Vercel-ready)
 
-This repository now includes a standalone backend scaffold under `backend/` using Express + Prisma + PostgreSQL.
+## Monorepo layout
+- `frontend/` — frontend workspace package (Vite scripts).
+- `backend/` — backend workspace package (Express + Prisma).
+- `backend/api/index.js` — Vercel serverless entrypoint.
+- `vercel.json` — rewrite API traffic and serve SPA output.
 
-## Included modules
-- `POST /auth/request-otp`
-- `POST /auth/verify-otp`
-- `POST /auth/logout`
-- `GET /auth/session`
-- `GET /user/me`
-- `GET /user/:id`
-- `GET /chats/list`
-- `GET /chats/:id/messages`
-- `POST /messages/send`
+## API surface
+- `POST /api/auth/request-otp`
+- `POST /api/auth/verify-otp`
+- `GET /api/auth/session`
+- `POST /api/auth/logout`
+- `GET /api/user/me`
+- `GET /api/chats/list`
+- `GET /api/chats/:id/messages`
+- `POST /api/messages/send`
 
 ## Prisma models
-- User
-- Session
-- PhoneOtp
-- Profile
-- Chat
-- ChatMember
-- Message
+- `User`
+- `Session`
+- `PhoneOtp`
+- `Profile`
+- `Chat`
+- `ChatMember`
+- `Message`
 
-## Run backend
+## Local run
 ```bash
-cd backend
 pnpm install
-cp .env.example .env
-pnpm prisma:migrate
-pnpm dev
+pnpm dev:backend
+pnpm dev:frontend
 ```
 
-## Frontend API layer scaffold
-Added `src/services` with:
-- `apiClient.ts`
-- `authService.ts`
-- `userService.ts`
-- `chatService.ts`
-- `messageService.ts`
-
-These services are ready to be wired into existing stores/managers as the next migration phase.
+## Vercel
+- Build command: `pnpm build:frontend`
+- Output directory: `dist`
+- Backend route: `/api/* -> backend/api/index.js`
