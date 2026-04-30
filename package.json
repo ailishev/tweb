@@ -79,10 +79,6 @@
     "fflate": "^0.8.2"
   },
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "engines": {
     "node": "20.x"
   }
