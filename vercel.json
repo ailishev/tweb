@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm build:frontend",
+  "buildCommand": "pnpm run vercel-build",
   "outputDirectory": "dist",
   "rewrites": [
     {
