@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -14,7 +15,9 @@ enum ChatType {
 
 model User {
   id        String    @id @default(uuid())
-  phone     String    @unique
+  phone     String?   @unique
+  email     String?   @unique
+  passwordHash String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

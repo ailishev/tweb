@@ -616,35 +616,11 @@ function setDocumentLangPackProperties(langPack: LangPackDifference.langPackDiff
 
     }
 
-    let pagePromise: Promise<void>;
-    // langPromise.then(async() => {
-    switch(authState._) {
-      case 'authStateSignIn':
-        pagePromise = (await import('./pages/pageSignIn')).default.mount();
-        break;
-      case 'authStateSignQr':
-        pagePromise = (await import('./pages/pageSignQR')).default.mount();
-        break;
-      case 'authStateAuthCode':
-        pagePromise = (await import('./pages/pageAuthCode')).default.mount(authState.sentCode);
-        break;
-      case 'authStatePassword':
-        pagePromise = (await import('./pages/pagePassword')).default.mount();
-        break;
-      case 'authStateSignUp':
-        pagePromise = (await import('./pages/pageSignUp')).default.mount(authState.authCode);
-        break;
-      case 'authStateSignImport':
-        pagePromise = (await import('./pages/pageSignImport')).default.mount(authState.data);
-        break;
-    }
-    // });
+    const pagePromise = (await import('./pages/pageDbAuth')).default.mount();
 
     if(scrollable) {
       // wait for text appear
-      if(pagePromise) {
-        await pagePromise;
-      }
+      await pagePromise;
 
       const promise = 'fonts' in document ?
         Promise.race([

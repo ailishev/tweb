@@ -57,6 +57,66 @@ router.post('/verify-otp', async(req, res) => {
   res.json({token: session.token, user});
 });
 
+router.post('/register', async(req, res) => {
+  const {email, phone, password, firstName, lastName} = req.body;
+  if(!password || (!email && !phone)) {
+    return res.status(400).json({error: 'password and (email or phone) are required'});
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = await prisma.user.create({
+    data: {
+      email,
+      phone: phone || `user_${Date.now()}`,
+      passwordHash,
+      profile: {
+        create: {
+          firstName,
+          lastName,
+          phoneNumber: phone
+        }
+      }
+    },
+    include: {profile: true}
+  });
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const session = await prisma.session.create({
+    data: {userId: user.id, token, expiresAt: new Date(Date.now() + env.sessionTtlMs)}
+  });
+
+  res.json({token: session.token, user});
+});
+
+router.post('/login', async(req, res) => {
+  const {email, phone, password} = req.body;
+  if(!password || (!email && !phone)) {
+    return res.status(400).json({error: 'password and (email or phone) are required'});
+  }
+
+  const user = await prisma.user.findFirst({
+    where: email ? {email} : {phone},
+    include: {profile: true}
+  });
+
+  if(!user?.passwordHash) {
+    return res.status(400).json({error: 'Invalid credentials'});
+  }
+
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if(!valid) {
+    return res.status(400).json({error: 'Invalid credentials'});
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const session = await prisma.session.create({
+    data: {userId: user.id, token, expiresAt: new Date(Date.now() + env.sessionTtlMs)}
+  });
+
+  res.json({token: session.token, user});
+});
+
 router.post('/logout', authMiddleware, async(req, res) => {
   await prisma.session.delete({where: {id: req.session.id}});
   res.json({ok: true});

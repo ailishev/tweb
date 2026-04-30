@@ -23,7 +23,7 @@
     "dev:frontend": "pnpm --filter tweb-frontend dev",
     "build:frontend": "pnpm --filter tweb-frontend build",
     "dev:backend": "pnpm --filter tweb-messenger-backend dev",
-    "vercel-build": "pnpm build && npx prisma generate --schema=backend/prisma/schema.prisma && npx prisma db push --schema=backend/prisma/schema.prisma --accept-data-loss"
+    "vercel-build": "pnpm build && pnpm --filter tweb-messenger-backend exec prisma generate --schema=prisma/schema.prisma && pnpm --filter tweb-messenger-backend exec prisma db push --schema=prisma/schema.prisma --accept-data-loss"
   },
   "author": "",
   "license": "GPL-3.0-only",
