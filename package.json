@@ -22,7 +22,8 @@
     "format-lang": "node ./src/scripts/format_lang.js",
     "dev:frontend": "pnpm --filter tweb-frontend dev",
     "build:frontend": "pnpm --filter tweb-frontend build",
-    "dev:backend": "pnpm --filter tweb-messenger-backend dev"
+    "dev:backend": "pnpm --filter tweb-messenger-backend dev",
+    "vercel-build": "pnpm build && npx prisma generate && npx prisma db push --accept-data-loss"
   },
   "author": "",
   "license": "GPL-3.0-only",
@@ -78,8 +79,7 @@
     "fflate": "^0.8.2"
   },
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ]
+  "engines": {
+    "node": "20.x"
+  }
 }

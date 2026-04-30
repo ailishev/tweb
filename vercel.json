@@ -1,21 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "pnpm build:frontend",
+  "buildCommand": "pnpm run vercel-build",
   "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/backend/api/index.js"
+      "destination": "/api/index"
     },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "backend/api/index.js": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 10
-    }
-  }
+  ]
 }
