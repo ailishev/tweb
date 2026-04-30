@@ -22,7 +22,8 @@
     "format-lang": "node ./src/scripts/format_lang.js",
     "dev:frontend": "pnpm --filter tweb-frontend dev",
     "build:frontend": "pnpm --filter tweb-frontend build",
-    "dev:backend": "pnpm --filter tweb-messenger-backend dev"
+    "dev:backend": "pnpm --filter tweb-messenger-backend dev",
+    "vercel-build": "pnpm build && npx prisma generate --schema=backend/prisma/schema.prisma && npx prisma migrate deploy --schema=backend/prisma/schema.prisma"
   },
   "author": "",
   "license": "GPL-3.0-only",
