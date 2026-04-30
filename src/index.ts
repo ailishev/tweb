@@ -616,16 +616,11 @@ function setDocumentLangPackProperties(langPack: LangPackDifference.langPackDiff
 
     }
 
-    let pagePromise: Promise<void>;
-    // langPromise.then(async() => {
-    pagePromise = (await import('./pages/pageDbAuth')).default.mount();
-    // });
+    const pagePromise = (await import('./pages/pageDbAuth')).default.mount();
 
     if(scrollable) {
       // wait for text appear
-      if(pagePromise) {
-        await pagePromise;
-      }
+      await pagePromise;
 
       const promise = 'fonts' in document ?
         Promise.race([
