@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm run vercel-build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "installCommand": "pnpm install --no-frozen-lockfile"
+}

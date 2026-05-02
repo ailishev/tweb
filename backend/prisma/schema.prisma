@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ChatType {
+  private
+  group
+  channel
+  saved
+}
+
+model User {
+  id        String    @id @default(uuid())
+  phone     String?   @unique
+  email     String?   @unique
+  passwordHash String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  sessions  Session[]
+  profile   Profile?
+  members   ChatMember[]
+  messages  Message[]
+  chatReads ChatReadState[]
+  gifts     Gift[]
+  favorites Favorite[]
+  savedMessagesChat Chat? @relation("SavedMessagesChat")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model PhoneOtp {
+  id        String   @id @default(cuid())
+  phone     String
+  codeHash  String
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId         String   @unique
+  firstName      String?
+  lastName       String?
+  username       String?  @unique
+  bio            String?
+  avatarUrl      String?
+  /** Short online / status line for UI */
+  status         String?
+  isPremium      Boolean  @default(false)
+  phoneNumber    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id        String       @id @default(cuid())
+  type      ChatType
+  title     String?
+  createdAt DateTime     @default(now())
+  /** If set, this chat is the user’s “Saved Messages” folder (single-member). */
+  savedOwnerId String?   @unique
+  savedOwner   User?      @relation("SavedMessagesChat", fields: [savedOwnerId], references: [id], onDelete: Cascade)
+
+  members  ChatMember[]
+  messages Message[]
+  readStates ChatReadState[]
+  favorites Favorite[]
+}
+
+model ChatReadState {
+  id        String    @id @default(cuid())
+  chatId    String
+  userId    String
+  lastReadAt DateTime?
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([userId])
+}
+
+model ChatMember {
+  id     String @id @default(cuid())
+  chatId String
+  userId String
+  role   String
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([chatId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  senderId  String
+  text      String
+  createdAt DateTime @default(now())
+
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  favorites Favorite[]
+
+  @@index([chatId, createdAt])
+}
+
+model Gift {
+  id         String   @id @default(cuid())
+  ownerId    String
+  rarity     String?
+  animation  String?
+  title      String?
+  createdAt  DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  /** Chat that contained the message (for permission checks). */
+  chatId    String
+  messageId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+  @@index([userId])
+}
