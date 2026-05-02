@@ -16,6 +16,7 @@ import AppSearchSuper, {SearchSuperMediaType} from '@components/appSearchSuper';
 import {DateData, fillTipDates} from '@helpers/date';
 import {MOUNT_CLASS_TO} from '@config/debug';
 import AppSettingsTab from '@components/sidebarLeft/tabs/settings';
+import AppProfileTab from '@components/sidebarLeft/tabs/profile';
 import AppNewChannelTab from '@components/sidebarLeft/tabs/newChannel';
 import AppContactsTab from '@components/sidebarLeft/tabs/contacts';
 import AppArchivedTab from '@components/sidebarLeft/tabs/archivedTab';
@@ -695,7 +696,7 @@ export class AppSidebarLeft extends SidebarSlider {
       separator: true,
       onClick: () => {
         closeTabsBefore(() => {
-          this.createTab(AppSettingsTab).open();
+          this.createTab(AppProfileTab).open();
         });
       }
     }, moreSubmenu];
@@ -769,7 +770,7 @@ export class AppSidebarLeft extends SidebarSlider {
               regularText: wrapUserName(user),
               onClick: () => {
                 closeTabsBefore(() => {
-                  this.createTab(AppSettingsTab).open();
+                  this.createTab(AppProfileTab).open();
                 });
               }
             });

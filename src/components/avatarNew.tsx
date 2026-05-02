@@ -663,6 +663,8 @@ export const AvatarNew = (props: {
     const linkedMonoforumPeer = peer?._ === 'channel' && peer.pFlags?.monoforum && peer.linked_monoforum_id ? await managers.appChatsManager.getChat(peer.linked_monoforum_id.toPeerId?.()) : undefined;
 
     const photo = getPeerPhoto(linkedMonoforumPeer || peer);
+    const avatarSource = (linkedMonoforumPeer || peer) as any;
+    const customAvatarUrl = avatarSource && (typeof avatarSource.avatarUrl === 'string' ? avatarSource.avatarUrl : undefined);
     const avatarAvailable = !!photo;
     const avatarRendered = avatarAvailable && !!media(); // if avatar isn't available, let's reset it
     const isAvatarCached = props.accountNumber === getCurrentAccount() && avatarAvailable && apiManagerProxy.isAvatarCached(peerId, size);
@@ -702,6 +704,30 @@ export const AvatarNew = (props: {
 
     if(storiesSegmentsResult && !storiesSegmentsResult.cached) {
       updateStoriesSegments();
+    }
+
+    if(!avatarAvailable && customAvatarUrl) {
+      const image = document.createElement('img');
+      image.className = 'avatar-photo';
+      // Prefer direct <img src> for external URLs (avoids fetch/CORS issues).
+      image.decoding = 'async';
+      image.loading = 'eager';
+      image.referrerPolicy = 'no-referrer';
+      const detachLoad = () => {
+        image.onload = null;
+        image.onerror = null;
+      };
+      image.onload = () => {
+        detachLoad();
+        if(!middleware()) return;
+        props.processImageOnLoad?.(image);
+        _setMedia(image);
+      };
+      image.onerror = () => {
+        detachLoad();
+      };
+      image.src = customAvatarUrl;
+      return;
     }
 
     if(avatarAvailable/*  && false */) {

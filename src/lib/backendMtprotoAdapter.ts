@@ -4,10 +4,13 @@ import type {
   ChatFull,
   ChatParticipant,
   Config,
+  Document,
   Dialog,
   Message,
   Peer,
   PeerNotifySettings,
+  SavedStarGift,
+  StarGift,
   User,
   UserFull
 } from '@layer';
@@ -52,8 +55,58 @@ function registerMid(chatBackendId: string, mid: number, msgBackendId: string) {
   midToBackendMsgId.set(`${chatBackendId}:${mid}`, msgBackendId);
 }
 
+function backendGiftMsgId(giftId: string | number) {
+  const s = String(giftId || '0');
+  let hash = 0;
+  for(let i = 0; i < s.length; i++) {
+    hash = ((hash << 5) - hash) + s.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) + 10000;
+}
+
+function makeBackendGiftDocument(gift: any): Document.document {
+  return {
+    _: 'document',
+    pFlags: {},
+    id: String(gift?.id || randomId()),
+    access_hash: '0',
+    file_reference: [],
+    date: backendCreatedAtToUnixSeconds(gift?.createdAt),
+    mime_type: 'image/webp',
+    size: 1,
+    dc_id: 2,
+    attributes: [],
+    thumbs: []
+  } as Document.document;
+}
+
+function mapBackendGiftToSavedGift(gift: any): SavedStarGift.savedStarGift {
+  const starGift: StarGift.starGift = {
+    _: 'starGift',
+    pFlags: {},
+    id: String(gift?.id || randomId()),
+    sticker: makeBackendGiftDocument(gift),
+    stars: 1,
+    convert_stars: 1,
+    title: typeof gift?.title === 'string' && gift.title.trim() ? gift.title.trim() : 'Gift'
+  };
+
+  return {
+    _: 'savedStarGift',
+    pFlags: {pinned_to_top: true},
+    date: backendCreatedAtToUnixSeconds(gift?.createdAt),
+    gift: starGift,
+    msg_id: backendGiftMsgId(gift?.id)
+  };
+}
+
+function randomId() {
+  return Math.floor(Math.random() * 1e9).toString();
+}
+
 function deriveUsernameHandle(u: any): string | undefined {
-  const fromProfile = u.profile?.username ?? u.summary?.username;
+  const fromProfile = u.profileData?.username ?? u.profile?.username ?? u.summary?.username ?? u.username ?? u.handle;
   if(fromProfile != null && String(fromProfile).trim()) {
     return String(fromProfile).trim().replace(/^@/, '');
   }
@@ -67,6 +120,79 @@ function deriveUsernameHandle(u: any): string | undefined {
   return undefined;
 }
 
+function parseBirthday(raw: unknown): UserFull.userFull['birthday'] | undefined {
+  if(!raw) {
+    return;
+  }
+
+  if(typeof raw === 'object') {
+    const date = raw as {day?: number, month?: number, year?: number};
+    if(typeof date.day === 'number' && typeof date.month === 'number') {
+      return {
+        _: 'birthday',
+        day: date.day,
+        month: date.month,
+        year: typeof date.year === 'number' ? date.year : undefined
+      };
+    }
+  }
+
+  const d = new Date(raw as string);
+  if(Number.isNaN(d.getTime())) {
+    return;
+  }
+
+  return {
+    _: 'birthday',
+    day: d.getDate(),
+    month: d.getMonth() + 1,
+    year: d.getFullYear()
+  };
+}
+
+function parseBusinessLocation(raw: unknown): UserFull.userFull['business_location'] | undefined {
+  if(!raw || typeof raw !== 'object') {
+    return;
+  }
+
+  const obj = raw as {address?: string};
+  const address = typeof obj.address === 'string' ? obj.address.trim() : '';
+  if(!address) {
+    return;
+  }
+
+  return {
+    _: 'businessLocation',
+    address
+  };
+}
+
+function parseBusinessHours(raw: unknown): UserFull.userFull['business_work_hours'] | undefined {
+  if(!raw || typeof raw !== 'object') {
+    return;
+  }
+
+  const obj = raw as {timezone_id?: string, weekly_open?: Array<{start_minute?: number, end_minute?: number}>};
+  const timezoneId = typeof obj.timezone_id === 'string' && obj.timezone_id.trim() ? obj.timezone_id : 'UTC';
+  const weeklyOpen = Array.isArray(obj.weekly_open) ? obj.weekly_open
+  .filter((it) => typeof it?.start_minute === 'number' && typeof it?.end_minute === 'number')
+  .map((it) => ({
+    _: 'businessWeeklyOpen' as const,
+    start_minute: it.start_minute,
+    end_minute: it.end_minute
+  })) : [];
+  if(!weeklyOpen.length) {
+    return;
+  }
+
+  return {
+    _: 'businessWorkHours',
+    pFlags: {},
+    timezone_id: timezoneId,
+    weekly_open: weeklyOpen
+  };
+}
+
 export function mapBackendUser(u: any, flags?: {self?: boolean}): User.user {
   const id = backendUuidToUserPeerId(u.id);
   rememberUserPeer(id.toPeerId(false), u.id);
@@ -74,21 +200,78 @@ export function mapBackendUser(u: any, flags?: {self?: boolean}): User.user {
   if(flags?.self) {
     pFlags.self = true;
   }
+  if(
+    u?.profileData?.verified ||
+    u?.profile?.verified ||
+    u?.profileData?.isVerified ||
+    u?.profile?.isVerified ||
+    u?.verified ||
+    u?.isVerified ||
+    u?.summary?.verified
+  ) {
+    pFlags.verified = true;
+  }
+  if(u?.profileData?.isDeveloper || u?.profile?.isDeveloper || u?.isDeveloper) {
+    (pFlags as any).developer = true;
+  }
 
-  const firstNameRaw = u.profile?.firstName ?? '';
-  const lastNameRaw = u.profile?.lastName ?? '';
+  const firstNameRaw = u.profileData?.firstName ?? u.profile?.firstName ?? u.firstName ?? u.first_name ?? u.summary?.firstName ?? '';
+  const lastNameRaw = u.profileData?.lastName ?? u.profile?.lastName ?? u.lastName ?? u.last_name ?? u.summary?.lastName ?? '';
   const displayFirst = firstNameRaw || (u.phone ? String(u.phone) : 'User');
+  const usernamesRaw = Array.isArray(u.profileData?.usernames) ?
+    u.profileData.usernames :
+    (Array.isArray(u.profile?.usernames) ? u.profile.usernames : (Array.isArray(u.usernames) ? u.usernames : []));
+  const usernames = usernamesRaw
+  .filter((it: unknown): it is string => typeof it === 'string' && !!it.trim())
+  .map((it: string) => ({
+    _: 'username' as const,
+    pFlags: {active: true},
+    username: it.trim().replace(/^@/, '')
+  }));
 
-  return {
+  const lastSeenRaw = u?.profileData?.lastSeen ?? u?.profile?.lastSeen;
+  const lastSeenDate = lastSeenRaw ? new Date(lastSeenRaw) : undefined;
+  let status: User.user['status'];
+  if((u?.profileData?.status || u?.status) === 'online') {
+    status = {
+      _: 'userStatusOnline',
+      expires: Math.floor(Date.now() / 1000) + 60
+    };
+  } else if(lastSeenDate && Number.isFinite(lastSeenDate.getTime())) {
+    status = {
+      _: 'userStatusOffline',
+      was_online: Math.floor(lastSeenDate.getTime() / 1000)
+    };
+  } else {
+    status = {
+      _: 'userStatusRecently',
+      pFlags: {}
+    };
+  }
+
+  const mapped: any = {
     _: 'user',
     pFlags,
     id,
     first_name: displayFirst,
     last_name: lastNameRaw,
     username: deriveUsernameHandle(u),
-    phone: u.phone || u.profile?.phoneNumber || undefined,
-    status: {_: 'userStatusRecently', pFlags: {}}
+    usernames: usernames.length ? usernames : undefined,
+    phone: u.phone || u.phoneNumber || u.profileData?.phoneNumber || u.profile?.phoneNumber || undefined,
+    status
   };
+
+  const avatarUrl = u.profileData?.avatar ||
+    u.profileData?.avatarUrl ||
+    u.avatar ||
+    u.avatarUrl ||
+    u.photoUrl ||
+    u.profile?.avatarUrl;
+  if(typeof avatarUrl === 'string' && avatarUrl.trim()) {
+    mapped.avatarUrl = avatarUrl.trim();
+  }
+
+  return mapped as User.user;
 }
 
 function makeFallbackUserFromId(uid: UserId, self = false): User.user {
@@ -402,6 +585,7 @@ async function invokeBackendApiInner<T>(method: keyof MethodDeclMap, params: any
         config: {
           hash,
           pinned_orders: {dialogs: [], archived: []},
+          stargifts_pinned_to_top_limit: 3,
           dialogs_pinned_limit_default: 5,
           dialogs_pinned_limit_premium: 10
         } as any,
@@ -744,7 +928,16 @@ async function invokeBackendApiInner<T>(method: keyof MethodDeclMap, params: any
         _: 'userFull',
         pFlags: {},
         id: user.id,
-        about: u?.profile?.bio || u?.profile?.status || u?.summary?.status || '',
+        about: u?.profileData?.bio || u?.profile?.bio || u?.bio || u?.about || '',
+        stargifts_count: Array.isArray(u?.gifts) ? u.gifts.length : 0,
+        birthday: parseBirthday(u?.profileData?.birthday || u?.profile?.birthday || u?.birthday),
+        note: (u?.profileData?.contactNote || u?.profile?.contactNote || u?.contactNote) ? {
+          _: 'textWithEntities',
+          text: String(u?.profileData?.contactNote || u?.profile?.contactNote || u?.contactNote),
+          entities: []
+        } : undefined,
+        business_location: parseBusinessLocation(u?.profileData?.businessLocation || u?.profile?.businessLocation || u?.businessLocation),
+        business_work_hours: parseBusinessHours(u?.profileData?.businessHours || u?.profile?.businessHours || u?.businessHours),
         settings: {_:'peerSettings', pFlags: {}},
         notify_settings: defaultNotify(),
         common_chats_count: 0
@@ -757,6 +950,40 @@ async function invokeBackendApiInner<T>(method: keyof MethodDeclMap, params: any
         users: [user]
       } as T;
     }
+
+    case 'payments.getSavedStarGifts': {
+      await ensureSelf(api);
+      const inputPeer = params.peer;
+      const peerId = inputPeerToPeerId(inputPeer, api);
+      const targetUserId = peerId?.isUser?.() ? backendUserIdByPeer.get(peerId) : selfBackendUserId;
+      const uid = targetUserId || selfBackendUserId;
+      if(!uid) {
+        return {
+          _: 'payments.savedStarGifts',
+          count: 0,
+          gifts: [],
+          chats: [],
+          users: []
+        } as T;
+      }
+
+      const profile = await backendFetch(`/user/${encodeURIComponent(uid)}/full`);
+      const gifts = Array.isArray(profile?.gifts) ? profile.gifts : [];
+      const saved = gifts.map((gift: any) => mapBackendGiftToSavedGift(gift));
+      return {
+        _: 'payments.savedStarGifts',
+        count: saved.length,
+        gifts: saved,
+        chats: [],
+        users: [mapBackendUser(profile, {self: uid === selfBackendUserId})]
+      } as T;
+    }
+
+    case 'payments.getStarGiftCollections':
+      return {
+        _: 'payments.starGiftCollections',
+        collections: []
+      } as T;
 
     case 'messages.getFullChat': {
       await ensureSelf(api);

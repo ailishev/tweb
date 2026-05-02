@@ -10,25 +10,44 @@ import {reconcilePeer} from '@stores/peers';
 
 /** Chat PeerId string key → backend chat UUID (for REST message fetch on open). */
 const chatPeerKeyToBackendUuid = new Map<string, string>();
+let backendSavedChatUuid: string | undefined;
 
 function peerKey(peerId: PeerId) {
   return String(peerId);
 }
 
-export function rememberBackendChatPeersFromItems(items: unknown[]) {
+export function rememberBackendChatPeersFromItems(items: unknown[], selfUserId?: string) {
   chatPeerKeyToBackendUuid.clear();
+  backendSavedChatUuid = undefined;
   for(const raw of items) {
-    const it = raw as {id?: string};
+    const it = raw as {id?: string, type?: string};
     if(typeof it?.id !== 'string') {
       continue;
     }
+
+    if(it.type === 'saved') {
+      backendSavedChatUuid = it.id;
+      if(selfUserId) {
+        const selfPeerId = backendUuidToUserPeerId(selfUserId).toPeerId(false);
+        chatPeerKeyToBackendUuid.set(peerKey(selfPeerId), it.id);
+      }
+      continue;
+    }
+
     const pid = backendUuidToChatPeerId(it.id);
     chatPeerKeyToBackendUuid.set(peerKey(pid), it.id);
   }
 }
 
 export function getBackendChatUuidForPeer(peerId: PeerId): string | undefined {
-  return chatPeerKeyToBackendUuid.get(peerKey(peerId));
+  const direct = chatPeerKeyToBackendUuid.get(peerKey(peerId));
+  if(direct) {
+    return direct;
+  }
+  if(peerId?.isUser?.() && backendSavedChatUuid) {
+    return backendSavedChatUuid;
+  }
+  return undefined;
 }
 
 function pickTrimmedString(...candidates: unknown[]): string {
@@ -48,18 +67,50 @@ function strictUserFromMe(meData: Record<string, unknown>) {
   const profile = (meData.profile && typeof meData.profile === 'object') ?
     meData.profile as Record<string, unknown> :
     {};
+  const profileData = (meData.profileData && typeof meData.profileData === 'object') ?
+    meData.profileData as Record<string, unknown> :
+    {};
   const id = meData.id;
   const username = pickTrimmedString(
+    profileData.username,
     summary.username,
     profile.username,
     meData.username,
     meData.handle
   );
+  const usernamesRaw = (
+    Array.isArray(profileData.usernames) ? profileData.usernames :
+      (Array.isArray(profile.usernames) ? profile.usernames : undefined)
+  );
+  const usernames = Array.isArray(usernamesRaw) ?
+    usernamesRaw.filter((it): it is string => typeof it === 'string' && !!it.trim()).map((it) => it.trim()) :
+    [];
+  const bio = pickTrimmedString(profileData.bio, profile.bio, meData.bio, meData.about, meData.description);
+  const gifts = Array.isArray(meData.gifts) ? meData.gifts : [];
   return {
     id: typeof id === 'string' ? id : String(id || ''),
     username,
-    avatar: pickTrimmedString(summary.avatar, profile.avatarUrl, meData.avatar),
-    status: pickTrimmedString(summary.status, profile.status, meData.status)
+    usernames: usernames.length ? usernames : (username ? [username] : []),
+    bio,
+    about: bio,
+    description: bio,
+    avatar: pickTrimmedString(profileData.avatar, summary.avatar, profile.avatarUrl, meData.avatar),
+    status: pickTrimmedString(profileData.status, summary.status, profile.status, meData.status),
+    firstName: pickTrimmedString(profileData.firstName, profile.firstName, meData.firstName),
+    lastName: pickTrimmedString(profileData.lastName, profile.lastName, meData.lastName),
+    phone: pickTrimmedString(profileData.phoneNumber, meData.phone),
+    phoneNumber: pickTrimmedString(profileData.phoneNumber, profile.phoneNumber, meData.phone),
+    verified: !!(profileData.verified ?? profileData.isVerified ?? profile.verified ?? profile.isVerified ?? meData.verified ?? meData.isVerified),
+    lastSeen: profileData.lastSeen ?? profile.lastSeen ?? meData.lastSeen ?? null,
+    birthday: profileData.birthday ?? profile.birthday ?? null,
+    location: profileData.location ?? profile.location ?? null,
+    businessHours: profileData.businessHours ?? profile.businessHours ?? null,
+    businessLocation: profileData.businessLocation ?? profile.businessLocation ?? null,
+    link: pickTrimmedString(profileData.link, profile.link),
+    contactNote: pickTrimmedString(profileData.contactNote, profile.contactNote),
+    savedMusic: profileData.savedMusic ?? profile.savedMusic ?? null,
+    gifts,
+    isPremium: !!(profileData.isPremium ?? profile.isPremium ?? meData.isPremium)
   };
 }
 
@@ -163,7 +214,7 @@ export async function runBackendMainDataBootstrap(): Promise<void> {
       const strictMe = strictUserFromMe(meRes.data as Record<string, unknown>);
       setBackendBootstrapPayload(strictMe, []);
       mirrorBackendSelfPeerOnMain(meRes.data as Record<string, unknown>);
-      rememberBackendChatPeersFromItems([]);
+      rememberBackendChatPeersFromItems([], strictMe.id);
       await MTProtoMessagePort.getInstance<true>().invoke('manager', {
         name: 'appMessagesManager',
         method: 'hydrateBackendWsBootstrap',
@@ -180,7 +231,7 @@ export async function runBackendMainDataBootstrap(): Promise<void> {
 
     setBackendBootstrapPayload(strictMe, items);
     mirrorBackendSelfPeerOnMain(meRes.data as Record<string, unknown>);
-    rememberBackendChatPeersFromItems(items);
+    rememberBackendChatPeersFromItems(items, strictMe.id);
 
     await MTProtoMessagePort.getInstance<true>().invoke('manager', {
       name: 'appMessagesManager',
@@ -199,7 +250,7 @@ export async function runBackendMainDataBootstrap(): Promise<void> {
  * When user opens a chat: pull history from REST and merge into worker storage + Solid store.
  */
 export async function prefetchBackendHistoryForOpenedChat(peerId: PeerId): Promise<void> {
-  if(!Modes.backend || !peerId || !peerId.isAnyChat()) {
+  if(!Modes.backend || !peerId || (!peerId.isAnyChat() && !peerId.isUser())) {
     return;
   }
 

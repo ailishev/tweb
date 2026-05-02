@@ -5249,8 +5249,14 @@ export namespace Prisma {
     lastName: string | null
     username: string | null
     bio: string | null
+    birthday: Date | null
+    link: string | null
+    contactNote: string | null
     avatarUrl: string | null
     status: string | null
+    verified: boolean | null
+    isVerified: boolean | null
+    lastSeen: Date | null
     isPremium: boolean | null
     phoneNumber: string | null
     createdAt: Date | null
@@ -5264,8 +5270,14 @@ export namespace Prisma {
     lastName: string | null
     username: string | null
     bio: string | null
+    birthday: Date | null
+    link: string | null
+    contactNote: string | null
     avatarUrl: string | null
     status: string | null
+    verified: boolean | null
+    isVerified: boolean | null
+    lastSeen: Date | null
     isPremium: boolean | null
     phoneNumber: string | null
     createdAt: Date | null
@@ -5278,9 +5290,20 @@ export namespace Prisma {
     firstName: number
     lastName: number
     username: number
+    usernames: number
     bio: number
+    birthday: number
+    location: number
+    businessHours: number
+    businessLocation: number
+    link: number
+    contactNote: number
+    savedMusic: number
     avatarUrl: number
     status: number
+    verified: number
+    isVerified: number
+    lastSeen: number
     isPremium: number
     phoneNumber: number
     createdAt: number
@@ -5296,8 +5319,14 @@ export namespace Prisma {
     lastName?: true
     username?: true
     bio?: true
+    birthday?: true
+    link?: true
+    contactNote?: true
     avatarUrl?: true
     status?: true
+    verified?: true
+    isVerified?: true
+    lastSeen?: true
     isPremium?: true
     phoneNumber?: true
     createdAt?: true
@@ -5311,8 +5340,14 @@ export namespace Prisma {
     lastName?: true
     username?: true
     bio?: true
+    birthday?: true
+    link?: true
+    contactNote?: true
     avatarUrl?: true
     status?: true
+    verified?: true
+    isVerified?: true
+    lastSeen?: true
     isPremium?: true
     phoneNumber?: true
     createdAt?: true
@@ -5325,9 +5360,20 @@ export namespace Prisma {
     firstName?: true
     lastName?: true
     username?: true
+    usernames?: true
     bio?: true
+    birthday?: true
+    location?: true
+    businessHours?: true
+    businessLocation?: true
+    link?: true
+    contactNote?: true
+    savedMusic?: true
     avatarUrl?: true
     status?: true
+    verified?: true
+    isVerified?: true
+    lastSeen?: true
     isPremium?: true
     phoneNumber?: true
     createdAt?: true
@@ -5413,9 +5459,20 @@ export namespace Prisma {
     firstName: string | null
     lastName: string | null
     username: string | null
+    usernames: string[]
     bio: string | null
+    birthday: Date | null
+    location: JsonValue | null
+    businessHours: JsonValue | null
+    businessLocation: JsonValue | null
+    link: string | null
+    contactNote: string | null
+    savedMusic: JsonValue | null
     avatarUrl: string | null
     status: string | null
+    verified: boolean
+    isVerified: boolean
+    lastSeen: Date | null
     isPremium: boolean
     phoneNumber: string | null
     createdAt: Date
@@ -5445,9 +5502,20 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     username?: boolean
+    usernames?: boolean
     bio?: boolean
+    birthday?: boolean
+    location?: boolean
+    businessHours?: boolean
+    businessLocation?: boolean
+    link?: boolean
+    contactNote?: boolean
+    savedMusic?: boolean
     avatarUrl?: boolean
     status?: boolean
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: boolean
     isPremium?: boolean
     phoneNumber?: boolean
     createdAt?: boolean
@@ -5461,9 +5529,20 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     username?: boolean
+    usernames?: boolean
     bio?: boolean
+    birthday?: boolean
+    location?: boolean
+    businessHours?: boolean
+    businessLocation?: boolean
+    link?: boolean
+    contactNote?: boolean
+    savedMusic?: boolean
     avatarUrl?: boolean
     status?: boolean
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: boolean
     isPremium?: boolean
     phoneNumber?: boolean
     createdAt?: boolean
@@ -5477,9 +5556,20 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     username?: boolean
+    usernames?: boolean
     bio?: boolean
+    birthday?: boolean
+    location?: boolean
+    businessHours?: boolean
+    businessLocation?: boolean
+    link?: boolean
+    contactNote?: boolean
+    savedMusic?: boolean
     avatarUrl?: boolean
     status?: boolean
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: boolean
     isPremium?: boolean
     phoneNumber?: boolean
     createdAt?: boolean
@@ -5493,16 +5583,27 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     username?: boolean
+    usernames?: boolean
     bio?: boolean
+    birthday?: boolean
+    location?: boolean
+    businessHours?: boolean
+    businessLocation?: boolean
+    link?: boolean
+    contactNote?: boolean
+    savedMusic?: boolean
     avatarUrl?: boolean
     status?: boolean
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: boolean
     isPremium?: boolean
     phoneNumber?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "username" | "bio" | "avatarUrl" | "status" | "isPremium" | "phoneNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "username" | "usernames" | "bio" | "birthday" | "location" | "businessHours" | "businessLocation" | "link" | "contactNote" | "savedMusic" | "avatarUrl" | "status" | "verified" | "isVerified" | "lastSeen" | "isPremium" | "phoneNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -5524,12 +5625,23 @@ export namespace Prisma {
       firstName: string | null
       lastName: string | null
       username: string | null
+      usernames: string[]
       bio: string | null
+      birthday: Date | null
+      location: Prisma.JsonValue | null
+      businessHours: Prisma.JsonValue | null
+      businessLocation: Prisma.JsonValue | null
+      link: string | null
+      contactNote: string | null
+      savedMusic: Prisma.JsonValue | null
       avatarUrl: string | null
       /**
        * * Short online / status line for UI
        */
       status: string | null
+      verified: boolean
+      isVerified: boolean
+      lastSeen: Date | null
       isPremium: boolean
       phoneNumber: string | null
       createdAt: Date
@@ -5963,9 +6075,20 @@ export namespace Prisma {
     readonly firstName: FieldRef<"Profile", 'String'>
     readonly lastName: FieldRef<"Profile", 'String'>
     readonly username: FieldRef<"Profile", 'String'>
+    readonly usernames: FieldRef<"Profile", 'String[]'>
     readonly bio: FieldRef<"Profile", 'String'>
+    readonly birthday: FieldRef<"Profile", 'DateTime'>
+    readonly location: FieldRef<"Profile", 'Json'>
+    readonly businessHours: FieldRef<"Profile", 'Json'>
+    readonly businessLocation: FieldRef<"Profile", 'Json'>
+    readonly link: FieldRef<"Profile", 'String'>
+    readonly contactNote: FieldRef<"Profile", 'String'>
+    readonly savedMusic: FieldRef<"Profile", 'Json'>
     readonly avatarUrl: FieldRef<"Profile", 'String'>
     readonly status: FieldRef<"Profile", 'String'>
+    readonly verified: FieldRef<"Profile", 'Boolean'>
+    readonly isVerified: FieldRef<"Profile", 'Boolean'>
+    readonly lastSeen: FieldRef<"Profile", 'DateTime'>
     readonly isPremium: FieldRef<"Profile", 'Boolean'>
     readonly phoneNumber: FieldRef<"Profile", 'String'>
     readonly createdAt: FieldRef<"Profile", 'DateTime'>
@@ -12983,9 +13106,20 @@ export namespace Prisma {
     firstName: 'firstName',
     lastName: 'lastName',
     username: 'username',
+    usernames: 'usernames',
     bio: 'bio',
+    birthday: 'birthday',
+    location: 'location',
+    businessHours: 'businessHours',
+    businessLocation: 'businessLocation',
+    link: 'link',
+    contactNote: 'contactNote',
+    savedMusic: 'savedMusic',
     avatarUrl: 'avatarUrl',
     status: 'status',
+    verified: 'verified',
+    isVerified: 'isVerified',
+    lastSeen: 'lastSeen',
     isPremium: 'isPremium',
     phoneNumber: 'phoneNumber',
     createdAt: 'createdAt',
@@ -13068,6 +13202,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -13082,6 +13224,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -13128,6 +13279,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -13373,9 +13538,20 @@ export namespace Prisma {
     firstName?: StringNullableFilter<"Profile"> | string | null
     lastName?: StringNullableFilter<"Profile"> | string | null
     username?: StringNullableFilter<"Profile"> | string | null
+    usernames?: StringNullableListFilter<"Profile">
     bio?: StringNullableFilter<"Profile"> | string | null
+    birthday?: DateTimeNullableFilter<"Profile"> | Date | string | null
+    location?: JsonNullableFilter<"Profile">
+    businessHours?: JsonNullableFilter<"Profile">
+    businessLocation?: JsonNullableFilter<"Profile">
+    link?: StringNullableFilter<"Profile"> | string | null
+    contactNote?: StringNullableFilter<"Profile"> | string | null
+    savedMusic?: JsonNullableFilter<"Profile">
     avatarUrl?: StringNullableFilter<"Profile"> | string | null
     status?: StringNullableFilter<"Profile"> | string | null
+    verified?: BoolFilter<"Profile"> | boolean
+    isVerified?: BoolFilter<"Profile"> | boolean
+    lastSeen?: DateTimeNullableFilter<"Profile"> | Date | string | null
     isPremium?: BoolFilter<"Profile"> | boolean
     phoneNumber?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
@@ -13389,9 +13565,20 @@ export namespace Prisma {
     firstName?: SortOrderInput | SortOrder
     lastName?: SortOrderInput | SortOrder
     username?: SortOrderInput | SortOrder
+    usernames?: SortOrder
     bio?: SortOrderInput | SortOrder
+    birthday?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    businessHours?: SortOrderInput | SortOrder
+    businessLocation?: SortOrderInput | SortOrder
+    link?: SortOrderInput | SortOrder
+    contactNote?: SortOrderInput | SortOrder
+    savedMusic?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
+    verified?: SortOrder
+    isVerified?: SortOrder
+    lastSeen?: SortOrderInput | SortOrder
     isPremium?: SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -13408,9 +13595,20 @@ export namespace Prisma {
     NOT?: ProfileWhereInput | ProfileWhereInput[]
     firstName?: StringNullableFilter<"Profile"> | string | null
     lastName?: StringNullableFilter<"Profile"> | string | null
+    usernames?: StringNullableListFilter<"Profile">
     bio?: StringNullableFilter<"Profile"> | string | null
+    birthday?: DateTimeNullableFilter<"Profile"> | Date | string | null
+    location?: JsonNullableFilter<"Profile">
+    businessHours?: JsonNullableFilter<"Profile">
+    businessLocation?: JsonNullableFilter<"Profile">
+    link?: StringNullableFilter<"Profile"> | string | null
+    contactNote?: StringNullableFilter<"Profile"> | string | null
+    savedMusic?: JsonNullableFilter<"Profile">
     avatarUrl?: StringNullableFilter<"Profile"> | string | null
     status?: StringNullableFilter<"Profile"> | string | null
+    verified?: BoolFilter<"Profile"> | boolean
+    isVerified?: BoolFilter<"Profile"> | boolean
+    lastSeen?: DateTimeNullableFilter<"Profile"> | Date | string | null
     isPremium?: BoolFilter<"Profile"> | boolean
     phoneNumber?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
@@ -13424,9 +13622,20 @@ export namespace Prisma {
     firstName?: SortOrderInput | SortOrder
     lastName?: SortOrderInput | SortOrder
     username?: SortOrderInput | SortOrder
+    usernames?: SortOrder
     bio?: SortOrderInput | SortOrder
+    birthday?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    businessHours?: SortOrderInput | SortOrder
+    businessLocation?: SortOrderInput | SortOrder
+    link?: SortOrderInput | SortOrder
+    contactNote?: SortOrderInput | SortOrder
+    savedMusic?: SortOrderInput | SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
+    verified?: SortOrder
+    isVerified?: SortOrder
+    lastSeen?: SortOrderInput | SortOrder
     isPremium?: SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -13445,9 +13654,20 @@ export namespace Prisma {
     firstName?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     lastName?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     username?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    usernames?: StringNullableListFilter<"Profile">
     bio?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    birthday?: DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
+    location?: JsonNullableWithAggregatesFilter<"Profile">
+    businessHours?: JsonNullableWithAggregatesFilter<"Profile">
+    businessLocation?: JsonNullableWithAggregatesFilter<"Profile">
+    link?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    contactNote?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    savedMusic?: JsonNullableWithAggregatesFilter<"Profile">
     avatarUrl?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     status?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    verified?: BoolWithAggregatesFilter<"Profile"> | boolean
+    isVerified?: BoolWithAggregatesFilter<"Profile"> | boolean
+    lastSeen?: DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
     isPremium?: BoolWithAggregatesFilter<"Profile"> | boolean
     phoneNumber?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
@@ -14030,9 +14250,20 @@ export namespace Prisma {
     firstName?: string | null
     lastName?: string | null
     username?: string | null
+    usernames?: ProfileCreateusernamesInput | string[]
     bio?: string | null
+    birthday?: Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: string | null
+    contactNote?: string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: string | null
     status?: string | null
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: Date | string | null
     isPremium?: boolean
     phoneNumber?: string | null
     createdAt?: Date | string
@@ -14046,9 +14277,20 @@ export namespace Prisma {
     firstName?: string | null
     lastName?: string | null
     username?: string | null
+    usernames?: ProfileCreateusernamesInput | string[]
     bio?: string | null
+    birthday?: Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: string | null
+    contactNote?: string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: string | null
     status?: string | null
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: Date | string | null
     isPremium?: boolean
     phoneNumber?: string | null
     createdAt?: Date | string
@@ -14060,9 +14302,20 @@ export namespace Prisma {
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernames?: ProfileUpdateusernamesInput | string[]
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    contactNote?: NullableStringFieldUpdateOperationsInput | string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14076,9 +14329,20 @@ export namespace Prisma {
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernames?: ProfileUpdateusernamesInput | string[]
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    contactNote?: NullableStringFieldUpdateOperationsInput | string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14091,9 +14355,20 @@ export namespace Prisma {
     firstName?: string | null
     lastName?: string | null
     username?: string | null
+    usernames?: ProfileCreateusernamesInput | string[]
     bio?: string | null
+    birthday?: Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: string | null
+    contactNote?: string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: string | null
     status?: string | null
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: Date | string | null
     isPremium?: boolean
     phoneNumber?: string | null
     createdAt?: Date | string
@@ -14105,9 +14380,20 @@ export namespace Prisma {
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernames?: ProfileUpdateusernamesInput | string[]
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    contactNote?: NullableStringFieldUpdateOperationsInput | string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14120,9 +14406,20 @@ export namespace Prisma {
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernames?: ProfileUpdateusernamesInput | string[]
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    contactNote?: NullableStringFieldUpdateOperationsInput | string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14751,6 +15048,48 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -14762,9 +15101,20 @@ export namespace Prisma {
     firstName?: SortOrder
     lastName?: SortOrder
     username?: SortOrder
+    usernames?: SortOrder
     bio?: SortOrder
+    birthday?: SortOrder
+    location?: SortOrder
+    businessHours?: SortOrder
+    businessLocation?: SortOrder
+    link?: SortOrder
+    contactNote?: SortOrder
+    savedMusic?: SortOrder
     avatarUrl?: SortOrder
     status?: SortOrder
+    verified?: SortOrder
+    isVerified?: SortOrder
+    lastSeen?: SortOrder
     isPremium?: SortOrder
     phoneNumber?: SortOrder
     createdAt?: SortOrder
@@ -14778,8 +15128,14 @@ export namespace Prisma {
     lastName?: SortOrder
     username?: SortOrder
     bio?: SortOrder
+    birthday?: SortOrder
+    link?: SortOrder
+    contactNote?: SortOrder
     avatarUrl?: SortOrder
     status?: SortOrder
+    verified?: SortOrder
+    isVerified?: SortOrder
+    lastSeen?: SortOrder
     isPremium?: SortOrder
     phoneNumber?: SortOrder
     createdAt?: SortOrder
@@ -14793,12 +15149,58 @@ export namespace Prisma {
     lastName?: SortOrder
     username?: SortOrder
     bio?: SortOrder
+    birthday?: SortOrder
+    link?: SortOrder
+    contactNote?: SortOrder
     avatarUrl?: SortOrder
     status?: SortOrder
+    verified?: SortOrder
+    isVerified?: SortOrder
+    lastSeen?: SortOrder
     isPremium?: SortOrder
     phoneNumber?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -14855,17 +15257,6 @@ export namespace Prisma {
     _max?: NestedEnumChatTypeFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type ChatScalarRelationFilter = {
     is?: ChatWhereInput
     isNot?: ChatWhereInput
@@ -14895,20 +15286,6 @@ export namespace Prisma {
     chatId?: SortOrder
     userId?: SortOrder
     lastReadAt?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type ChatMemberChatIdUserIdCompoundUniqueInput = {
@@ -15372,10 +15749,23 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type ProfileCreateusernamesInput = {
+    set: string[]
+  }
+
   export type UserCreateNestedOneWithoutProfileInput = {
     create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
     connectOrCreate?: UserCreateOrConnectWithoutProfileInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type ProfileUpdateusernamesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -15588,10 +15978,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutChatReadsInput, UserUncheckedCreateWithoutChatReadsInput>
     connectOrCreate?: UserCreateOrConnectWithoutChatReadsInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type ChatUpdateOneRequiredWithoutReadStatesNestedInput = {
@@ -15900,9 +16286,57 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -15928,31 +16362,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumChatTypeFilter<$PrismaModel>
     _max?: NestedEnumChatTypeFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -15984,9 +16393,20 @@ export namespace Prisma {
     firstName?: string | null
     lastName?: string | null
     username?: string | null
+    usernames?: ProfileCreateusernamesInput | string[]
     bio?: string | null
+    birthday?: Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: string | null
+    contactNote?: string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: string | null
     status?: string | null
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: Date | string | null
     isPremium?: boolean
     phoneNumber?: string | null
     createdAt?: Date | string
@@ -15998,9 +16418,20 @@ export namespace Prisma {
     firstName?: string | null
     lastName?: string | null
     username?: string | null
+    usernames?: ProfileCreateusernamesInput | string[]
     bio?: string | null
+    birthday?: Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: string | null
+    contactNote?: string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: string | null
     status?: string | null
+    verified?: boolean
+    isVerified?: boolean
+    lastSeen?: Date | string | null
     isPremium?: boolean
     phoneNumber?: string | null
     createdAt?: Date | string
@@ -16202,9 +16633,20 @@ export namespace Prisma {
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernames?: ProfileUpdateusernamesInput | string[]
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    contactNote?: NullableStringFieldUpdateOperationsInput | string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16216,9 +16658,20 @@ export namespace Prisma {
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    usernames?: ProfileUpdateusernamesInput | string[]
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    location?: NullableJsonNullValueInput | InputJsonValue
+    businessHours?: NullableJsonNullValueInput | InputJsonValue
+    businessLocation?: NullableJsonNullValueInput | InputJsonValue
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    contactNote?: NullableStringFieldUpdateOperationsInput | string | null
+    savedMusic?: NullableJsonNullValueInput | InputJsonValue
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -736,28 +736,10 @@
   }
 
   &-pinned-gifts {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    top: 4.5rem;
-    left: 50%;
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-    transition: opacity 100ms ease-in-out, transform 100ms ease-in-out;
-    transform-origin: center;
-
-    @include respond-to(handhelds) {
-      // костыль из-за того что аватар в мобилке имеет странные размеры
-      top: calc(2.5rem + 5vw);
-      width: 28.5%;
-      height: auto;
-      aspect-ratio: 1/1;
-    }
-
-    .profile-container:not(.is-collapsed) & {
-      opacity: 0;
-      transform: translateX(-50%) scale(1.2);
-    }
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 6px 2px 2px;
   }
 
   &-pinned-gift {
@@ -770,7 +752,7 @@
       filter: blur(15px) saturate(1.5);
     }
 
-    position: absolute;
+    position: relative;
     width: 30px;
     height: 30px;
 
@@ -781,12 +763,6 @@
       100% {opacity: 1;}
     }
 
-    &[data-idx="0"] { left: -40px; top: -3px; }
-    &[data-idx="1"] { left: -100px; top: 57px; }
-    &[data-idx="2"] { left: -35px; top: 87px; }
-    &[data-idx="3"] { right: -50px; top: 17px; }
-    &[data-idx="4"] { right: -110px; top: 37px; }
-    &[data-idx="5"] { right: -80px; top: 87px; }
   }
 
   &-story-previews-container {
@@ -880,6 +856,12 @@
       top: 0;
       left: 0;
     }
+  }
+
+  // Developer badge: second verified icon near the first one.
+  // Uses the same verified icon element (`generateVerifiedIcon`), just spaced slightly.
+  .verified-icon.verified-icon-secondary {
+    margin-inline-start: -6px;
   }
 
   &-bot-verification {

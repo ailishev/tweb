@@ -24,6 +24,9 @@
     "build:frontend": "pnpm --filter tweb-frontend build",
     "dev:backend": "pnpm --filter tweb-messenger-backend dev",
     "dev:full": "pnpm --filter tweb-messenger-backend run prisma:ensure && pnpm -r --parallel --stream --filter tweb-frontend --filter tweb-messenger-backend run dev",
+    "prisma:generate": "pnpm --filter tweb-messenger-backend run prisma:generate",
+    "prisma:push": "pnpm --filter tweb-messenger-backend run prisma:push",
+    "prisma:migrate": "pnpm --filter tweb-messenger-backend run prisma:migrate",
     "vercel-build": "pnpm build && pnpm --filter tweb-messenger-backend exec prisma generate --schema=prisma/schema.prisma && pnpm --filter tweb-messenger-backend exec prisma db push --schema=prisma/schema.prisma --accept-data-loss"
   },
   "author": "",

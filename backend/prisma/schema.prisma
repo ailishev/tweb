@@ -63,10 +63,21 @@ model Profile {
   firstName      String?
   lastName       String?
   username       String?  @unique
+  usernames      String[] @default([])
   bio            String?
+  birthday       DateTime?
+  location       Json?
+  businessHours  Json?
+  businessLocation Json?
+  link           String?
+  contactNote    String?
+  savedMusic     Json?
   avatarUrl      String?
   /** Short online / status line for UI */
   status         String?
+  verified       Boolean  @default(false)
+  isVerified     Boolean  @default(false)
+  lastSeen       DateTime?
   isPremium      Boolean  @default(false)
   phoneNumber    String?
   createdAt      DateTime @default(now())

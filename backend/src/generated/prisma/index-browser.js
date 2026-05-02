@@ -153,9 +153,20 @@ exports.Prisma.ProfileScalarFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   username: 'username',
+  usernames: 'usernames',
   bio: 'bio',
+  birthday: 'birthday',
+  location: 'location',
+  businessHours: 'businessHours',
+  businessLocation: 'businessLocation',
+  link: 'link',
+  contactNote: 'contactNote',
+  savedMusic: 'savedMusic',
   avatarUrl: 'avatarUrl',
   status: 'status',
+  verified: 'verified',
+  isVerified: 'isVerified',
+  lastSeen: 'lastSeen',
   isPremium: 'isPremium',
   phoneNumber: 'phoneNumber',
   createdAt: 'createdAt',
@@ -214,6 +225,11 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -222,6 +238,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.ChatType = exports.$Enums.ChatType = {
   private: 'private',

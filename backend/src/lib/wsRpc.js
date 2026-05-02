@@ -148,11 +148,30 @@ async function handleGetCurrentUser(prisma, userId) {
     throw Object.assign(new Error('USER_NOT_FOUND'), {code: 'USER_NOT_FOUND'});
   }
   const p = user.profile;
+  const usernames = Array.isArray(p?.usernames) ? p.usernames.filter((it) => typeof it === 'string' && it.trim()) : [];
+  const username = (p?.username && String(p.username).trim()) || usernames[0] || '';
   return {
     id: user.id,
-    username: (p?.username && String(p.username).trim()) || '',
+    phone: user.phone || null,
+    email: user.email || null,
+    firstName: p?.firstName || '',
+    lastName: p?.lastName || '',
+    username,
+    usernames: usernames.length ? usernames : (username ? [username] : []),
+    bio: p?.bio || '',
+    birthday: p?.birthday || null,
+    location: p?.location || null,
+    businessHours: p?.businessHours || null,
+    businessLocation: p?.businessLocation || null,
+    link: p?.link || '',
+    contactNote: p?.contactNote || '',
+    savedMusic: p?.savedMusic || null,
+    isPremium: !!p?.isPremium,
     avatar: p?.avatarUrl || '',
-    status: p?.status || ''
+    status: p?.status || '',
+    verified: !!(p?.verified || p?.isVerified),
+    lastSeen: p?.lastSeen || null,
+    phoneNumber: p?.phoneNumber || user.phone || null
   };
 }
 

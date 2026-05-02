@@ -7,6 +7,33 @@ import {authMiddleware} from '../../middleware/auth.js';
 
 const router = Router();
 
+function defaultProfileData({phone, firstName, lastName}) {
+  const digits = String(phone || '').replace(/\D/g, '');
+  const suffix = digits ? digits.slice(-10) : String(Date.now()).slice(-10);
+  const username = `user${suffix}`;
+  return {
+    firstName,
+    lastName,
+    username,
+    usernames: [username],
+    bio: 'About me',
+    birthday: new Date('1999-01-01T00:00:00.000Z'),
+    location: {address: 'Kyiv'},
+    businessHours: {
+      timezone_id: 'Europe/Kyiv',
+      weekly_open: [{start_minute: 540, end_minute: 1080}]
+    },
+    businessLocation: {address: 'Kyiv'},
+    link: `t.me/${username}`,
+    contactNote: 'Personal note',
+    savedMusic: {title: 'Saved Track', performer: 'Unknown Artist'},
+    status: 'online',
+    verified: false,
+    lastSeen: new Date(),
+    phoneNumber: phone
+  };
+}
+
 function generateOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
@@ -84,14 +111,14 @@ router.post('/complete-profile', async(req, res) => {
     update: {
       profile: {
         upsert: {
-          create: {phoneNumber: phone, firstName, lastName},
+          create: defaultProfileData({phone, firstName, lastName}),
           update: {firstName, lastName}
         }
       }
     },
     create: {
       phone,
-      profile: {create: {phoneNumber: phone, firstName, lastName}}
+      profile: {create: defaultProfileData({phone, firstName, lastName})}
     },
     include: {profile: true}
   });
@@ -119,9 +146,7 @@ router.post('/register', async(req, res) => {
       passwordHash,
       profile: {
         create: {
-          firstName,
-          lastName,
-          phoneNumber: phone
+          ...defaultProfileData({phone, firstName, lastName})
         }
       }
     },

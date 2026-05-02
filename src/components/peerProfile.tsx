@@ -266,7 +266,6 @@ PeerProfile.Avatar = () => {
     avatars.setPeer(context.peerId);
     avatars.info.append(name, subtitle);
     avatars.container.append(
-      wrapSolidComponent(PeerProfile.PinnedGifts, middleware.get()),
       wrapSolidComponent(PeerProfile.PinnedMusic, middleware.get()),
       wrapSolidComponent(() => PeerProfile.StoryPreviews({
         info: avatars.info
@@ -478,24 +477,35 @@ PeerProfile.SubtitleStatus = () => {
 
 PeerProfile.PinnedGifts = () => {
   const context = useContext(PeerProfileContext);
-  const {rootScope, wrapSticker} = useHotReloadGuard();
+  const {rootScope, wrapSticker, i18n} = useHotReloadGuard();
   const {peerId} = context.getDetailsForUse();
   const giftsCount = createMemo(() => (context.fullPeer as UserFull.userFull)?.stargifts_count);
-  const [pinnedGifts] = createResource(giftsCount, (count) => {
-    if(!peerId.isUser() || !count) {
+  const shouldLoadPinnedGifts = createMemo(() => {
+    if(!peerId.isUser()) {
+      return;
+    }
+
+    // For self-profile we still try loading gifts even when stargifts_count is absent in backend snapshots.
+    if(peerId === rootScope.myId) {
+      return true;
+    }
+
+    return !!giftsCount();
+  });
+  const [pinnedGifts] = createResource(shouldLoadPinnedGifts, (needLoad) => {
+    if(!needLoad) {
       return;
     }
 
     return rootScope.managers.appGiftsManager.getPinnedGifts(peerId);
   });
   const [elements] = createResource(pinnedGifts, async(gifts) => {
-    context.onPinnedGiftsChange?.(gifts);
-    if(!gifts) {
-      return;
-    }
+    const list = gifts || [];
+    context.onPinnedGiftsChange?.(list);
+    if(!list.length) return;
 
     const middleware = createMiddleware().get();
-    const promises = gifts
+    const promises = list
     .filter((it) => it.saved.pFlags.pinned_to_top)
     .map(async(gift, idx) => {
       const div = document.createElement('div');
@@ -522,11 +532,19 @@ PeerProfile.PinnedGifts = () => {
 
     return Promise.all(promises);
   });
+  const hasGifts = createMemo(() => !!elements()?.length);
 
   return (
-    <div class="profile-pinned-gifts">
-      {elements()}
-    </div>
+    <Show when={hasGifts()}>
+      <Section
+        name={i18n('SharedMedia.Gifts')}
+        noDelimiter
+      >
+        <div class="profile-pinned-gifts">
+          {elements()}
+        </div>
+      </Section>
+    </Show>
   );
 };
 
@@ -941,11 +959,29 @@ PeerProfile.Location = () => {
 
 PeerProfile.Bio = () => {
   const context = useContext(PeerProfileContext);
-  const {i18n, PopupPremium, PopupElement, PopupTranslate, I18n, wrapRichText, toast} = useHotReloadGuard();
+  const {i18n, PopupPremium, PopupElement, PopupTranslate, I18n, wrapRichText, toast, rootScope} = useHotReloadGuard();
   const appConfig = useAppConfig();
   const peerTranslation = usePeerTranslation(context.peerId);
 
-  const about = createMemo(() => context.fullPeer?.about);
+  const backendSelfBio = createMemo(() => {
+    if(!context.peerId.isUser() || context.peerId !== rootScope.myId) {
+      return;
+    }
+
+    const user = backendBootstrapStore.currentUser;
+    if(!user || typeof user !== 'object') {
+      return;
+    }
+
+    const bio = user.bio ?? user.about ?? user.description;
+    if(typeof bio === 'string') {
+      const normalizedBio = bio.trim();
+      if(normalizedBio) {
+        return normalizedBio;
+      }
+    }
+  });
+  const about = createMemo(() => context.fullPeer?.about || backendSelfBio());
   const bioLanguagePromise = createMemo(() => detectLanguageForTranslation(about()));
 
   const aboutWrapped = createMemo(() => {
@@ -1466,11 +1502,10 @@ PeerProfile.MainSection = () => {
         <PeerProfile.Username />
         <PeerProfile.Location />
         <PeerProfile.Bio />
+        <PeerProfile.PinnedGifts />
         <PeerProfile.Link />
         <PeerProfile.Birthday />
         <PeerProfile.ContactNote />
-        <PeerProfile.BusinessHours />
-        <PeerProfile.BusinessLocation />
         <PeerProfile.Notifications />
       </Show>
     </Section>

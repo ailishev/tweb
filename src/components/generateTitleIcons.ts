@@ -108,8 +108,16 @@ export default async function generateTitleIcons({
     }
   }
 
-  if((peer as Chat.channel).pFlags.verified && !noVerifiedIcon) {
+  if(((peer as Chat.channel).pFlags.verified || (peer as User.user).pFlags.verified) && !noVerifiedIcon) {
     elements.push(generateVerifiedIcon());
+  }
+
+  // Backend-specific: "developer" badge (double verified) using the same Telegram verified icon.
+  // This preserves existing UI primitives (peer-title icons) without introducing custom SVGs.
+  if((peer as any)?.pFlags?.developer) {
+    const second = generateVerifiedIcon();
+    second.classList.add('verified-icon-secondary');
+    elements.push(second);
   }
 
   if(peer?._ === 'channel' && peer.pFlags?.monoforum && !noDirectMessagesBadge) {
