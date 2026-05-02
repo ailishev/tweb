@@ -80,6 +80,7 @@ type PeerProfileContextValue = {
   hasSavedMusic: boolean,
   getDetailsForUse: () => {peerId: PeerId, threadId?: number},
   verifyContext: (peerId: PeerId, threadId?: number) => boolean,
+  isSettingsSelfProfile: boolean,
 };
 
 const PeerProfileContext = createContext<PeerProfileContextValue>();
@@ -166,6 +167,9 @@ const PeerProfile = (props: {
     },
     get isBotforum() {
       return !!((value.peer as User.user)?.pFlags?.bot_forum_view);
+    },
+    get isSettingsSelfProfile() {
+      return props.peerId === rootScope.myId && !props.isDialog;
     },
     get needSimpleAvatar() {
       return value.isTopic;
@@ -435,7 +439,7 @@ PeerProfile.SubtitleStatus = () => {
         needClear: true,
         useWhitespace: true,
         middleware,
-        ignoreSelf: !context.isDialog
+        ignoreSelf: !context.isDialog && !context.isSettingsSelfProfile
       }).then(() => true);
     });
 
@@ -1500,13 +1504,19 @@ PeerProfile.MainSection = () => {
       <Show when={!(context.isBotforum && context.threadId)}>
         <PeerProfile.Phone />
         <PeerProfile.Username />
-        <PeerProfile.Location />
+        <Show when={!context.isSettingsSelfProfile}>
+          <PeerProfile.Location />
+        </Show>
         <PeerProfile.Bio />
-        <PeerProfile.PinnedGifts />
-        <PeerProfile.Link />
+        <Show when={!context.isSettingsSelfProfile}>
+          <PeerProfile.PinnedGifts />
+          <PeerProfile.Link />
+        </Show>
         <PeerProfile.Birthday />
-        <PeerProfile.ContactNote />
-        <PeerProfile.Notifications />
+        <Show when={!context.isSettingsSelfProfile}>
+          <PeerProfile.ContactNote />
+          <PeerProfile.Notifications />
+        </Show>
       </Show>
     </Section>
   );
